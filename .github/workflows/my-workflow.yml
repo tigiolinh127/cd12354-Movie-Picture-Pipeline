@@ -53,3 +53,20 @@ jobs:
           cd starter/frontend
           docker tag frontend:${{ github.sha }} 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
           docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
+
+      - name: create deployment code 
+        uses: jonknutson/kubectl-eks-apply@v2.1.2
+        env:
+          REGION: us-east-1
+          CLUSTER: my-cluster
+        with:
+          kubectl-command: create deploy frontend --image 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
+      
+      - name: expose deployment code 
+        uses: jonknutson/kubectl-eks-apply@v2.1.2
+        env:
+          REGION: us-east-1
+          CLUSTER: my-cluster
+        with:
+          kubectl-command: expose deploy frontend --type=LoadBalancer --name=publicfrontend --port 80
+      
