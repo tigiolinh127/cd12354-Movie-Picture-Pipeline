@@ -13,8 +13,43 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: User node js 18
+      - name: Use node js 18
         uses: actions/setup-node@v3
       
-      - name: print hello
-        run: echo "Hello World!"
+      - name: build frontend
+        run: |      
+          cd starter/frontend
+          npm ci
+      - name: Run tests
+        run: |
+          cd starter/frontend
+          npm run test
+
+      - name: Build Docker image
+        run: |
+          cd starter/frontend
+          docker build -t frontend:${{ github.sha }} .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker image to ECR
+        run: |
+          cd starter/frontend
+          docker tag frontend:${{ github.sha }} 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
+          docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
