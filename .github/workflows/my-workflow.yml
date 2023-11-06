@@ -25,11 +25,6 @@ jobs:
           cd starter/frontend
           npm run test
 
-      - name: Build Docker image
-        run: |
-          cd starter/frontend
-          docker build -t frontend:${{ github.sha }} .
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -47,6 +42,11 @@ jobs:
 
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker image
+        run: |
+          cd starter/frontend
+          docker build -t frontend:${{ github.sha }} .
 
       - name: Push Docker image to ECR
         run: |
