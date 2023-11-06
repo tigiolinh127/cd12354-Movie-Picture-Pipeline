@@ -46,13 +46,13 @@ jobs:
       - name: Build Docker image
         run: |
           cd starter/frontend
-          docker build -t frontend:${{ github.sha }} .
+          docker build -t frontend:latest .
 
       - name: Push Docker image to ECR
         run: |
           cd starter/frontend
-          docker tag frontend:${{ github.sha }} 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
-          docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
+          docker tag frontend:latest 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+          docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
       - name: create deployment code 
         uses: jonknutson/kubectl-eks-apply@v2.1.2
@@ -60,7 +60,7 @@ jobs:
           REGION: us-east-1
           CLUSTER: my-cluster
         with:
-          kubectl-command: create deploy frontend --image 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ github.sha }}
+          kubectl-command: apply -f starter/frontend/k8s/deployment.yaml
       
       - name: expose deployment code 
         uses: jonknutson/kubectl-eks-apply@v2.1.2
@@ -68,5 +68,5 @@ jobs:
           REGION: us-east-1
           CLUSTER: my-cluster
         with:
-          kubectl-command: expose deploy frontend --type=LoadBalancer --name=publicfrontend --port 80
+          kubectl-command: apply -f starter/frontend/k8s/sevice.yaml
       
