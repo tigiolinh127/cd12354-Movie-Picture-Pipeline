@@ -16,13 +16,13 @@ jobs:
       - name: Use node js 18
         uses: actions/setup-node@v3
       
-      - name: build frontend
+      - name: build backend
         run: |      
-          cd starter/frontend
+          cd starter/backend
           npm ci
       - name: Run tests
         run: |
-          cd starter/frontend
+          cd starter/backend
           npm run test
 
   deploy:
@@ -45,14 +45,14 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cd starter/frontend
-          docker build -t frontend:latest .
+          cd starter/backend
+          docker build -t backend:latest .
 
       - name: Push Docker image to ECR
         run: |
-          cd starter/frontend
-          docker tag frontend:latest 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
-          docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+          cd starter/backend
+          docker tag backend:latest 615115875849.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+          docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/backend:latest
 
       - name: create deployment code 
         uses: jonknutson/kubectl-eks-apply@v2.1.2
@@ -60,7 +60,7 @@ jobs:
           REGION: us-east-1
           CLUSTER: my-cluster
         with:
-          kubectl-command: apply -f starter/frontend/k8s/deployment.yaml
+          kubectl-command: apply -f starter/backend/k8s/deployment.yaml
       
       - name: expose deployment code 
         uses: jonknutson/kubectl-eks-apply@v2.1.2
@@ -68,5 +68,5 @@ jobs:
           REGION: us-east-1
           CLUSTER: my-cluster
         with:
-          kubectl-command: apply -f starter/frontend/k8s/service.yaml
+          kubectl-command: apply -f starter/backend/k8s/service.yaml
       

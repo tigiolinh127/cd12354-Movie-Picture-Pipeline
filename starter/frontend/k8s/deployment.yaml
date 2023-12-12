@@ -16,6 +16,9 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: frontend:latest
+          image: 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+          env:
+          - name: REACT_APP_MOVIE_API_URL
+            value: backend:5000
           ports:
             - containerPort: 3000

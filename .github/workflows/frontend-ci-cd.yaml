@@ -1,4 +1,4 @@
-name: My First Workflow
+name: Frontend Workflow
 
 on:
   push:
@@ -68,5 +68,5 @@ jobs:
           REGION: us-east-1
           CLUSTER: my-cluster
         with:
-          kubectl-command: apply -f starter/frontend/k8s/sevice.yaml
+          kubectl-command: apply -f starter/frontend/k8s/service.yaml
       
