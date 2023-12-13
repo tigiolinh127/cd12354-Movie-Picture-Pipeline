@@ -46,7 +46,7 @@ jobs:
       - name: Build Docker image
         run: |
           cd starter/frontend
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://backend.default.svc -t frontend:latest .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://a3549aa7c04f24014a142474af808c94-793286478.us-east-1.elb.amazonaws.com -t frontend:latest .
 
       - name: Push Docker image to ECR
         run: |
