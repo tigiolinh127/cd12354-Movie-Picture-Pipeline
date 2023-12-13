@@ -33,8 +33,9 @@ jobs:
       - name: Install dependencies
         run: |      
           cd starter/backend
+          pip install pipenv
           pipenv install
-          pipenv run lint
+          pip run lint
 
 
       # - name: Run lint
