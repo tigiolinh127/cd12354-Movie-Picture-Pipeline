@@ -1,0 +1,110 @@
+name: Frontend CD Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+
+      - name: Restore cache and install dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      - name: Install dependencies
+        run: |      
+          cd starter/backend
+          pip install pipenv
+          pipenv install --system --deploy
+
+
+      - name: Run lint
+        run: |      
+          cd starter/backend
+          pipenv shell
+          pipenv run lint
+
+  test:
+    needs: lint
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+
+      - name: Restore cache and install dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      - name: Install dependencies
+        run: |      
+          cd starter/backend
+          pip install pipenv
+          pipenv install --system --deploy
+
+
+      - name: Run lint
+        run: |      
+          cd starter/backend
+          pipenv shell
+          pipenv run test
+
+  build:
+    needs: [lint, test]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Restore cache and install dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      - name: Install dependencies
+        run: |      
+          cd starter/backend
+          pip install pipenv
+          pipenv install --system --deploy
+
+
+      - name: Run lint
+        run: |      
+          cd starter/backend
+          pipenv shell
+          pipenv run test
