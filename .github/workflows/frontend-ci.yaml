@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: starter/frontend
 
 jobs:
   lint:
@@ -17,23 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Setup NodeJS
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+      - name: Use node js 18
+        uses: actions/setup-node@v3
 
-      - name: Restore cache and install dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      
-      - name: build frontend
-        run: |      
-          cd starter/frontend
-          npm ci
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
 
   test:
     needs: lint
@@ -44,23 +35,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup NodeJS
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+      - name: Use node js 18
+        uses: actions/setup-node@v3
 
-      - name: Restore cache and install dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      
-      - name: build frontend
-        run: |      
-          cd starter/frontend
-          npm run test
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test
 
   build:
     needs: [lint, test]
@@ -71,67 +53,58 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup NodeJS
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+      - name: Use node js 18
+        uses: actions/setup-node@v3
 
-      - name: Restore cache and install dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
       
       - name: build frontend
-        run: |      
-          cd starter/frontend
-          npm run test
+        run: npm run test
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Setup AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+  #     - name: Setup AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-east-1
 
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@v1
+  #     - name: Login to ECR
+  #       uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build Docker image
-        run: |
-          cd starter/frontend
-          docker build -t frontend:latest .
+  #     - name: Build Docker image
+  #       run: |
+  #         cd starter/frontend
+  #         docker build -t frontend:latest .
 
-      - name: Push Docker image to ECR
-        run: |
-          cd starter/frontend
-          docker tag frontend:latest 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
-          docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+  #     - name: Push Docker image to ECR
+  #       run: |
+  #         cd starter/frontend
+  #         docker tag frontend:latest 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+  #         docker push 615115875849.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
-      - name: create deployment code 
-        uses: jonknutson/kubectl-eks-apply@v2.1.2
-        env:
-          REGION: us-east-1
-          CLUSTER: my-cluster
-        with:
-          kubectl-command: apply -f starter/frontend/k8s/deployment.yaml
+  #     - name: create deployment code 
+  #       uses: jonknutson/kubectl-eks-apply@v2.1.2
+  #       env:
+  #         REGION: us-east-1
+  #         CLUSTER: my-cluster
+  #       with:
+  #         kubectl-command: apply -f starter/frontend/k8s/deployment.yaml
       
-      - name: expose deployment code 
-        uses: jonknutson/kubectl-eks-apply@v2.1.2
-        env:
-          REGION: us-east-1
-          CLUSTER: my-cluster
-        with:
-          kubectl-command: apply -f starter/frontend/k8s/service.yaml
+  #     - name: expose deployment code 
+  #       uses: jonknutson/kubectl-eks-apply@v2.1.2
+  #       env:
+  #         REGION: us-east-1
+  #         CLUSTER: my-cluster
+  #       with:
+  #         kubectl-command: apply -f starter/frontend/k8s/service.yaml
       
       
