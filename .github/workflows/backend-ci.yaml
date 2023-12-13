@@ -34,8 +34,8 @@ jobs:
         run: |      
           cd starter/backend
           pip install pipenv
-          pipenv install
-          pipenv --python 3.10 
+          pipenv --python 3.10 install
+          pipenv  --python 3.10 shell 
           pip run lint
 
 
