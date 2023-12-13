@@ -34,7 +34,7 @@ jobs:
         run: |      
           cd starter/backend
           pip install pipenv
-          pipenv install --system --deploy
+          pipenv install
 
 
       - name: Run lint
@@ -69,7 +69,7 @@ jobs:
         run: |      
           cd starter/backend
           pip install pipenv
-          pipenv install --system --deploy
+          pipenv install
 
 
       - name: Run lint
@@ -103,7 +103,7 @@ jobs:
         run: |      
           cd starter/backend
           pip install pipenv
-          pipenv install --system --deploy
+          pipenv install 
 
 
       - name: Run lint
