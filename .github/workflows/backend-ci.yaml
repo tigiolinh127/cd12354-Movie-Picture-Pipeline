@@ -40,7 +40,7 @@ jobs:
       - name: Run lint
         run: |      
           cd starter/backend
-          pipenv shell
+
           pipenv run lint
 
   test:
@@ -75,7 +75,7 @@ jobs:
       - name: Run lint
         run: |      
           cd starter/backend
-          pipenv shell
+
           pipenv run test
 
   build:
@@ -109,5 +109,5 @@ jobs:
       - name: Run lint
         run: |      
           cd starter/backend
-          pipenv shell
+
           pipenv run test
