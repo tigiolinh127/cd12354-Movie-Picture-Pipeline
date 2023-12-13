@@ -33,8 +33,6 @@ jobs:
       - name: Install dependencies
         run: |      
           cd starter/backend
-          pip install pipenv
-          pipenv shell
           pipenv install
           pipenv run lint
 
@@ -42,7 +40,7 @@ jobs:
       # - name: Run lint
       #   run: |      
       #     cd starter/backend
-
+      #     pip install pipenv
       #     pipenv run lint
 
   test:
