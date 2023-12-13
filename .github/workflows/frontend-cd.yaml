@@ -46,7 +46,7 @@ jobs:
       - name: Build Docker image
         run: |
           cd starter/frontend
-          docker build -t frontend:latest .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=backend.default.svc -t frontend:latest .
 
       - name: Push Docker image to ECR
         run: |
