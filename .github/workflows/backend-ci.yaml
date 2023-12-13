@@ -41,7 +41,7 @@ jobs:
         run: |      
           cd starter/backend
           pipenv shell
-          pipenv run lint
+          pipenv run test
 
   test:
     needs: lint
