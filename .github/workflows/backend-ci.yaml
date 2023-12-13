@@ -35,6 +35,7 @@ jobs:
           cd starter/backend
           pip install pipenv
           pipenv install
+          pipenv shell
           pip run lint
 
 
