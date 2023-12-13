@@ -34,8 +34,8 @@ jobs:
         run: |      
           cd starter/backend
           pip install pipenv
-          pipenv install
           pipenv shell
+          pipenv install
           pipenv run lint
 
 
@@ -71,6 +71,7 @@ jobs:
         run: |      
           cd starter/backend
           pip install pipenv
+          pipenv shell
           pipenv install
           pipenv run test
 
