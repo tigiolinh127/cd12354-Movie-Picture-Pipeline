@@ -35,13 +35,14 @@ jobs:
           cd starter/backend
           pip install pipenv
           pipenv install
-
-
-      - name: Run lint
-        run: |      
-          cd starter/backend
-
           pipenv run lint
+
+
+      # - name: Run lint
+      #   run: |      
+      #     cd starter/backend
+
+      #     pipenv run lint
 
   test:
     needs: lint
@@ -70,44 +71,45 @@ jobs:
           cd starter/backend
           pip install pipenv
           pipenv install
-
-
-      - name: Run lint
-        run: |      
-          cd starter/backend
-
           pipenv run test
 
-  build:
-    needs: [lint, test]
 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # - name: Run lint
+      #   run: |      
+      #     cd starter/backend
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      #     pipenv run test
 
-      - name: Restore cache and install dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-python-
+  # build:
+  #   needs: [lint, test]
 
-      - name: Install dependencies
-        run: |      
-          cd starter/backend
-          pip install pipenv
-          pipenv install 
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.10'
+
+  #     - name: Restore cache and install dependencies
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ~/.cache/pip
+  #         key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-python-
+
+  #     - name: Install dependencies
+  #       run: |      
+  #         cd starter/backend
+  #         pip install pipenv
+  #         pipenv install 
 
 
-      - name: Run lint
-        run: |      
-          cd starter/backend
+  #     - name: Run lint
+  #       run: |      
+  #         cd starter/backend
 
-          pipenv run test
+  #         pipenv run test
